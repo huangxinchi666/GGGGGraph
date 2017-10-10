@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
+import java.util.Scanner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,11 +16,11 @@ public class graph
 public String[] node=new String[1000];
 public int [][] Matrix=new int [1000][1000];
 public int vertexnum;
-public graph createDirectedGraph()
+public graph createDirectedGraph(String filename)
 {
 	FileReader fis=null;
 	try {
-		fis=new FileReader("E:/PPAP.txt");
+		fis=new FileReader(filename);
 		char[]b=new char[4096];
 		int n=fis.read(b);
 		String s=new String(b,0,n);
@@ -29,13 +30,9 @@ public graph createDirectedGraph()
 	    {
 		   a[i]=a[i].toLowerCase();
 	    }
-		/*for(int i=0;i<a.length;i++)
-		{
-			System.out.println(a[i]+" ");
-		}*/
 		String c[]=new String[a.length];
 		int flag,num=0;
-		for(int i=0;i<a.length;i++)
+		for(int i=1;i<a.length;i++)
 		{
 			flag=0;
 		    for(int j=0;j<c.length;j++)
@@ -161,13 +158,6 @@ public String queryBridgeWords(graph G,String word1,String word2)
 		}
 	}
 	
-	/*for(int i=0;i<G.vertexnum;i++)
-	{
-		for(int j=0;j<G.vertexnum;j++)
-		{
-			System.out.println(G.Matrix[i][j]);
-		}
-	}*/
 	int count=0;
 	String out[]=new String[G.vertexnum];
 	if(w1==-1&&w2!=-1)
@@ -186,16 +176,13 @@ public String queryBridgeWords(graph G,String word1,String word2)
 	{
 		for(int i=0;i<G.vertexnum;i++)
 		{
-			if(G.Matrix[w1][i]<100000&&i!=w2)
+			if(G.Matrix[w1][i]<100000&&i!=w2&&G.Matrix[w1][i]!=0)
 			{
 				if(G.Matrix[i][w2]<100000)
 				{
 					bridge[i]=G.node[i];
 				}
 			}
-		}
-		for(int i=0;i<bridge.length;i++){
-			System.out.print(bridge[i]+"   ");
 		}
 		for(int i=0;i<G.vertexnum;i++)
 		{
@@ -247,7 +234,7 @@ public String generateNewText(graph G,String inputText)
     	word1=word1.toLowerCase();
     	word2=word2.toLowerCase();
     	String bridge[]=new String[G.vertexnum];
-    	for(int i=0;i<G.vertexnum;i++)
+    	for(int i=1;i<G.vertexnum;i++)
     	{
     		if(G.node[i].equals(word1))
     		{
@@ -262,7 +249,7 @@ public String generateNewText(graph G,String inputText)
     	{
     	for(int i=0;i<G.vertexnum;i++)
     	{
-    		if(G.Matrix[w1][i]<100000&&i!=w2)
+    		if(G.Matrix[w1][i]<100000&&i!=w2&&G.Matrix[w1][i]!=0)
     		{
     			if(G.Matrix[i][w2]<100000)
     			{
@@ -280,10 +267,7 @@ public String generateNewText(graph G,String inputText)
     		    count++;
     		}
     	}
-    	 /*for(int i=0;i<out.length;i++)
-    	 {
-    		 System.out.println(out[i]);
-    	 }*/
+    	  
     	newtxt=newtxt+a[j]+" ";
     	if(count!=0)
     	{
@@ -294,7 +278,10 @@ public String generateNewText(graph G,String inputText)
     	{
     		newtxt=newtxt+a[j]+" ";
     	}
+    	
+		
     }
+  
     newtxt=newtxt+a[a.length-1];
 	return newtxt;
     
@@ -354,30 +341,7 @@ public String calsShortestPath(graph G,String word1,String word2)
 		}
 	}
 
-//	for(int i=0;i<G.vertexnum;i++)
-//	{
-//		for(int j=0;j<G.vertexnum;j++)
-//		{
-//			System.out.print(d[i][j]+"     ");
-//		}
-//			
-//		System.out.println();
-//	}
-	
-//	for(int i=0;i<G.vertexnum;i++)
-//	{
-//		for(int j=0;j<G.vertexnum;j++)
-//		{
-//			System.out.print("[");
-//			for(int k=0;k<G.vertexnum;k++)
-//			{
-//				System.out.print(p[i][j][k]+",");
-//			}
-//			System.out.print("]");
-//		}
-//			
-//		System.out.println();
-//	}	
+
 	if(w1==-1&&w2!=-1)
 	{
 		System.out.println("No\""+word1+"\"exist in the graph");
@@ -411,7 +375,6 @@ public String calsShortestPath(graph G,String word1,String word2)
 		System.out.print("END");
 	
 	}
-	
      return "1";
 }
 public String randomwalk(graph G)
@@ -423,14 +386,7 @@ public String randomwalk(graph G)
 	int i2,i3,count;
 	i2=random.nextInt(G.vertexnum);
 	newtxt=newtxt+G.node[i2];
-	for(int i=0;i<G.vertexnum;i++)
-	{
-		for(int j=0;j<G.vertexnum;j++)
-		{
-			System.out.print(G.Matrix[i][j]+"\t");
-		}
-		System.out.println();
-	}
+	
 	while(true)
 	{
 		count=0;
@@ -442,7 +398,7 @@ public String randomwalk(graph G)
 	    		count++;
 	    	}
 	    }
-	    System.out.println(count);
+	   // System.out.println(count);
 	    if(count!=0)
 	    {
 	    i3=out[random.nextInt(count)];
@@ -458,30 +414,103 @@ public String randomwalk(graph G)
 	    else
 	    {
 	    	break;
-	    }
-		
+	    }	
 	}
-	System.out.println(newtxt);
+	String a[]=newtxt.split(" ");
+	System.out.println("请输入“1”开始");
+	for(int i=0;i<a.length;i++)
+	{
+		Scanner sc=new Scanner(System.in);
+		String input= (String)sc.next();
+		if(input.equals("1"))
+		{
+		System.out.print(a[i]);
+		}
+		else{
+			System.out.println("终止");
+			break;
+		}
+		 
+	}
+	//System.out.println(newtxt);
 	return "1";
 }
-
-
-
 public static void main(String[] args) {
 	graph G=new graph();
 	String s=new String();
 	String length=new String();
 	String word3=new String();
-	G.createDirectedGraph();
-	
-	System.out.println("图已经构建完成！！！");
-//	s=G.queryBridgeWords(G, "i","a");
-//	word3=G.generateNewText(G, "seek to explore new and exciting synergies");
-//	System.out.println(word3);
-//	length=G.calsShortestPath(G, "to","and");
-//	System.out.println(length);
-	G.randomwalk(G);
-    G.showDirectedGraph(G);
-    
+	String k,mode;
+   do
+    {
+    	System.out.println("请输入需要执行的操作代号：");
+    	System.out.println("1.创建有向图");
+    	System.out.println("2.展示有向图");
+    	System.out.println("3.查询桥接词");
+    	System.out.println("4.根据桥接词生成文本");
+    	System.out.println("5.计算最短路径");
+    	System.out.println("6.随机游走");
+    	System.out.println("----输入\"end\"结束----");
+    	Scanner sc=new Scanner(System.in);
+    	mode=(String)sc.next();
+    	if(mode.equals("end"))
+    	{
+    		break;
+    	}
+    	switch(mode)
+    	{
+    	case "1":
+    		System.out.println("请输入文件路径");
+        	k=(String)sc.next();
+        	G.createDirectedGraph("E:\\PPAP.txt");
+        	System.out.println("图已构建完成！！");
+        	break;
+    	case "2":
+    		G.showDirectedGraph(G);
+    		System.out.println("请与文件夹中查看");
+    		
+    		break;
+    	case "3":
+    		System.out.println("请输入待查询的初始词与终止词：");
+    		System.out.println("请输入初始词：");
+    		String begin=(String)sc.next();
+    		System.out.println("请输入终止词：");
+    		String end=(String)sc.next();
+    		G.queryBridgeWords(G, begin, end);
+    		System.out.println("桥接词已输出");
+    		break;
+    	case "4":
+    		String out3=new String();
+    		System.out.println("请输文本");
+    		Scanner sg=new Scanner(System.in);
+    		String l=new String();
+    		 l=sg.nextLine();
+    		
+    		 out3=G.generateNewText(G, l);
+    		System.out.println("根据桥接词输出的 文本为："+out3);
+    		break;
+    	case "5":
+    		System.out.println("请输入待查询最短路径的初始词与终止词：");
+    		System.out.println("请输入初始词：");
+    		String begin1=(String)sc.next();
+    		System.out.println("请输入终止词：");
+    		String end1=(String)sc.next();
+    		G.calsShortestPath(G,begin1, end1);
+    		break;
+    	case "6":
+    		System.out.println("开始随机游走：");
+    		G.randomwalk(G);
+    		System.out.println("随机游走结束！");
+    		break;
+    	default:
+    		break;
+    	}
+    	
+    }while(true);
+
+    }
 }
-}
+
+
+
+
